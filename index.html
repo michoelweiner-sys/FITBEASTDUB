@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#101114">
+<title>FITBEASTDUB FITNESS</title>
+<style>
+:root{--bg:#101114;--panel:#1b1d22;--panel2:#24272e;--red:#f02d36;--muted:#a9abb3;--white:#f7f7f8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font-family:Arial,Helvetica,sans-serif}
+header{padding:18px 18px 10px;background:#15161a;position:sticky;top:0;z-index:4;border-bottom:1px solid #303239}
+.brand{display:flex;align-items:center;gap:12px}.brand img{width:58px;height:58px;border-radius:50%;object-fit:cover;border:2px solid var(--red)}
+.brand h1{font-size:19px;line-height:1.05;margin:0;letter-spacing:1px}.brand small{color:var(--red);font-weight:bold;letter-spacing:2px}
+main{padding:16px 15px 92px;max-width:720px;margin:auto}.hero{background:linear-gradient(135deg,#2a1117,#191b20 65%);border:1px solid #4a242b;border-radius:18px;padding:20px;margin-bottom:16px}
+.hero h2{font-size:25px;margin:0 0 7px}.hero p{color:#c5c5cb;margin:0;font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile,.card{background:var(--panel);border:1px solid #303239;border-radius:15px;padding:15px;margin-bottom:12px}
+.tile{min-height:104px;text-align:left;color:white;border-top:3px solid var(--red);cursor:pointer}.tile b{display:block;font-size:16px;margin:8px 0 4px}.tile span{font-size:12px;color:var(--muted)}
+button{border:0;border-radius:10px;padding:12px 14px;background:var(--red);color:white;font-weight:bold;font-size:14px;cursor:pointer}
+button.secondary{background:#343740}button.ghost{background:transparent;border:1px solid #555;color:white}
+input,select,textarea{width:100%;padding:12px;border-radius:9px;border:1px solid #42454e;background:#111318;color:white;margin:5px 0 12px;font-size:15px}
+label{font-size:12px;color:#c4c5ca}h2{font-size:22px;margin:8px 0 15px}h3{font-size:16px;margin:0 0 10px}
+.muted{color:var(--muted);font-size:13px}.small-btn{padding:8px 10px;font-size:12px}.empty{padding:14px;text-align:center;color:var(--muted)}.exercise input{margin-bottom:0}.note{min-height:72px;resize:vertical}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.exercise{padding:12px 0;border-bottom:1px solid #34363d}.exercise:last-child{border:0}
+.exercise strong{display:block;margin-bottom:7px}.stat{font-size:26px;font-weight:bold;color:var(--red)}
+nav{position:fixed;bottom:0;left:0;right:0;background:#17191e;border-top:1px solid #34363d;display:flex;justify-content:space-around;padding:9px 3px calc(9px + env(safe-area-inset-bottom));z-index:5}
+nav button{background:transparent;color:#bbb;padding:8px 5px;font-size:11px}nav button.active{color:#ff454d}
+.hidden{display:none}.pill{display:inline-block;background:#3b2025;color:#ff777d;padding:5px 9px;border-radius:20px;font-size:11px}
+.timer{font-size:48px;font-weight:bold;text-align:center;padding:16px;color:#ff4a52}
+</style>
+</head>
+<body>
+<header><div class="brand"><img src="fitbeastdub-logo.jpg" alt="FITBEASTDUB logo"><div><h1>FITBEASTDUB</h1><small>FITNESS</small></div><span style="margin-left:auto" class="pill">OFFLINE</span></div></header>
+<main>
+<section id="home">
+ <div class="hero"><h2>LET'S GET STRONGER.</h2><p>Your training. Your programs. Your progress. No internet required.</p></div>
+ <div class="grid">
+  <button class="tile" onclick="show('programs')">💪<b>My Programs</b><span>Build and follow workouts</span></button>
+  <button class="tile" onclick="show('progress')">📈<b>My Progress</b><span>Track your training history</span></button>
+  <button class="tile" onclick="show('builder')">➕<b>Create Program</b><span>Make your own split</span></button>
+  <button class="tile" onclick="show('timer')">⏱️<b>Rest Timer</b><span>Time your breaks</span></button>
+ </div>
+ <div class="card"><h3>This week</h3><div class="grid"><div><div class="stat" id="weekWorkouts">0</div><span class="muted">Workouts</span></div><div><div class="stat" id="weekVolume">0</div><span class="muted">Logged sets</span></div></div></div><div class="card"><h3>Quick start</h3><p class="muted">Choose a program to start logging exercises, sets, reps and weights. Your data stays on this phone.</p><button onclick="show('programs')">View programs</button></div>
+</section>
+<section id="programs" class="hidden"><h2>My Programs</h2><div id="programList"></div><button onclick="show('builder')">＋ Create a program</button></section>
+<section id="builder" class="hidden"><h2>Create a program</h2><div class="card">
+<label>PROGRAM NAME</label><input id="pname" placeholder="e.g. My PPL Split">
+<label>TRAINING DAYS / SPLIT</label><select id="ptype"><option>Push / Pull / Legs</option><option>Upper / Lower</option><option>Full Body</option><option>Custom Split</option></select>
+<label>EXERCISES (separate with commas)</label><textarea id="pex" rows="4" placeholder="Bench Press, Shoulder Press, Triceps Pushdown"></textarea>
+<button onclick="saveProgram()">Save program</button>
+</div></section>
+<section id="workout" class="hidden"><h2 id="workoutTitle">Workout</h2><div class="card"><p class="muted">Log each set separately. Your workout is saved on this phone.</p><div id="exerciseList"></div><label>WORKOUT NOTES (OPTIONAL)</label><textarea id="workoutNotes" class="note" placeholder="How did it feel? Any PRs or notes?"></textarea><button onclick="finishWorkout()">Finish workout</button> <button class="secondary" onclick="show('programs')">Cancel</button></div></section>
+<section id="progress" class="hidden"><h2>My Progress</h2><div class="grid"><div class="card"><span class="muted">Workouts completed</span><div class="stat" id="totalWorkouts">0</div></div><div class="card"><span class="muted">Programs saved</span><div class="stat" id="totalPrograms">0</div></div></div><div class="card"><h3>Workout history</h3><div id="history" class="muted">No workouts logged yet.</div><button class="secondary small-btn" onclick="clearHistory()">Clear history</button></div></section>
+<section id="timer" class="hidden"><h2>Rest Timer</h2><div class="card"><div class="timer" id="clock">01:30</div><div class="row"><button class="secondary" onclick="setTimer(60)">60 sec</button><button class="secondary" onclick="setTimer(90)">90 sec</button><button class="secondary" onclick="setTimer(120)">120 sec</button></div><div class="row" style="margin-top:12px"><button onclick="startTimer()">Start</button><button class="secondary" onclick="stopTimer()">Reset</button></div></div></section>
+<section id="guide" class="hidden"><h2>Training Guide</h2><div class="card"><h3>Push</h3><p class="muted">Chest, shoulders and triceps.</p><h3>Pull</h3><p class="muted">Back and biceps.</p><h3>Legs</h3><p class="muted">Quads, hamstrings, glutes and calves.</p><p class="muted">Warm up first, use controlled form, and allow recovery between hard sessions.</p></div></section>
+</main>
+<nav>
+<button class="active" onclick="show('home',this)">⌂<br>Home</button><button onclick="show('programs',this)">▤<br>Programs</button><button onclick="show('progress',this)">↗<br>Progress</button><button onclick="show('guide',this)">◎<br>Guide</button>
+</nav>
+<script>
+const starter=[
+{name:"Push Day",split:"Push / Pull / Legs",ex:["Bench Press","Shoulder Press","Lateral Raises","Triceps Pushdown"]},
+{name:"Pull Day",split:"Push / Pull / Legs",ex:["Lat Pulldown","Seated Row","Face Pull","Biceps Curl"]},
+{name:"Leg Day",split:"Push / Pull / Legs",ex:["Squat","Leg Press","Leg Curl","Calf Raises"]}
+];
+function readSaved(){
+ try {
+  if(window.FBDStorage && typeof FBDStorage.loadData==='function'){
+   const raw=FBDStorage.loadData(); return raw ? JSON.parse(raw) : {};
+  }
+  return {programs:JSON.parse(localStorage.getItem('fbd_programs')||'null'),history:JSON.parse(localStorage.getItem('fbd_history')||'[]')};
+ } catch(e){ return {}; }
+}
+const saved=readSaved();
+let programs=Array.isArray(saved.programs)&&saved.programs.length?saved.programs:starter;
+let history=Array.isArray(saved.history)?saved.history.map(h=>({...h,logs:(h.logs||[]).map(l=>({...l,sets:Array.isArray(l.sets)?l.sets:[{reps:l.reps||'0',weight:(l.weight&&l.weight!=='—')?l.weight:'0'}]}))})):[], activeProgram=null, timerSeconds=90, timerId=null;
+function persist(){
+ const data=JSON.stringify({programs,history});
+ try { if(window.FBDStorage && typeof FBDStorage.saveData==='function') FBDStorage.saveData(data); } catch(e) {}
+ try { localStorage.setItem('fbd_programs',JSON.stringify(programs)); localStorage.setItem('fbd_history',JSON.stringify(history)); } catch(e) {}
+ renderWeekly();
+}
+function show(id,btn){document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='programs')renderPrograms();if(id==='progress')renderProgress()}
+function renderPrograms(){document.getElementById('programList').innerHTML=programs.map((p,i)=>`<div class="card"><h3>${esc(p.name)}</h3><p class="muted">${esc(p.split)} · ${p.ex.length} exercises</p><button onclick="startWorkout(${i})">Start workout</button> <button class="secondary" onclick="deleteProgram(${i})">Delete</button></div>`).join('')||'<p class="muted">No programs yet.</p>'}
+function saveProgram(){let name=document.getElementById('pname').value.trim(),ex=document.getElementById('pex').value.split(',').map(x=>x.trim()).filter(Boolean),split=document.getElementById('ptype').value;if(!name||!ex.length){alert('Add a program name and at least one exercise.');return}programs.push({name,split,ex});persist();document.getElementById('pname').value='';document.getElementById('pex').value='';show('programs')}
+function deleteProgram(i){if(confirm('Delete this program?')){programs.splice(i,1);persist();renderPrograms()}}
+function startWorkout(i){activeProgram=programs[i];document.getElementById('workoutTitle').textContent=activeProgram.name;document.getElementById('workoutNotes').value='';document.getElementById('exerciseList').innerHTML=activeProgram.ex.map((e,j)=>`<div class="exercise"><strong>${esc(e)}</strong><div id="setsWrap${j}">${[1,2,3].map(n=>setRow(j,n)).join('')}</div><button class="secondary small-btn" onclick="addSet(${j})">＋ Add set</button></div>`).join('');show('workout')}
+function setRow(exerciseIndex,setNumber){return `<div class="row" style="margin:7px 0"><div><label>SET ${setNumber}</label><input type="number" min="1" value="10" id="reps${exerciseIndex}_${setNumber}" aria-label="Reps"></div><div><label>WEIGHT (LB)</label><input type="number" min="0" step="0.5" placeholder="0" id="weight${exerciseIndex}_${setNumber}" aria-label="Weight in pounds"></div></div>`}
+function addSet(i){const wrap=document.getElementById('setsWrap'+i),n=wrap.children.length+1;wrap.insertAdjacentHTML('beforeend',setRow(i,n))}
+function finishWorkout(){if(!activeProgram)return;let logs=activeProgram.ex.map((e,j)=>{let rows=document.getElementById('setsWrap'+j).children;let sets=[];for(let n=1;n<=rows.length;n++){sets.push({reps:val('reps'+j+'_'+n)||'0',weight:val('weight'+j+'_'+n)||'0'})}return {exercise:e,sets}});history.unshift({name:activeProgram.name,date:new Date().toISOString(),displayDate:new Date().toLocaleDateString(),notes:document.getElementById('workoutNotes').value.trim(),logs});persist();activeProgram=null;alert('Workout saved on this device!');show('progress')}
+function val(id){return document.getElementById(id).value}
+function renderProgress(){document.getElementById('totalWorkouts').textContent=history.length;document.getElementById('totalPrograms').textContent=programs.length;document.getElementById('history').innerHTML=history.map((h,i)=>`<div class="exercise"><strong>${esc(h.name)}</strong><span class="muted">${esc(h.displayDate||new Date(h.date).toLocaleDateString())} · ${h.logs.length} exercises</span><p class="muted">${h.logs.map(l=>`${esc(l.exercise)}: ${(l.sets||[]).map(x=>`${esc(x.reps)} reps @ ${esc(x.weight)} lb`).join(', ')}`).join('<br>')}</p>${h.notes?`<p class="muted">Notes: ${esc(h.notes)}</p>`:''}</div>`).join('')||'<div class="empty">No workouts logged yet. Start a program to record your first workout.</div>';renderWeekly()}
+function renderWeekly(){const now=new Date(),start=new Date(now);start.setDate(now.getDate()-6);start.setHours(0,0,0,0);const recent=history.filter(h=>{const d=new Date(h.date);return !isNaN(d)&&d>=start});const sets=recent.reduce((sum,h)=>sum+h.logs.reduce((n,l)=>n+(l.sets||[]).length,0),0);const a=document.getElementById('weekWorkouts'),b=document.getElementById('weekVolume');if(a)a.textContent=recent.length;if(b)b.textContent=sets}
+function clearHistory(){if(confirm('Delete all workout history on this phone?')){history=[];persist();renderProgress()}}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function setTimer(s){stopTimer();timerSeconds=s;drawTimer()}
+function drawTimer(){document.getElementById('clock').textContent=String(Math.floor(timerSeconds/60)).padStart(2,'0')+':'+String(timerSeconds%60).padStart(2,'0')}
+function startTimer(){if(timerId)return;timerId=setInterval(()=>{if(timerSeconds>0){timerSeconds--;drawTimer()}else{stopTimer();if(navigator.vibrate)navigator.vibrate([250,150,250]);alert('Rest time is over!')}},1000)}
+function stopTimer(){if(timerId)clearInterval(timerId);timerId=null;timerSeconds=90;drawTimer()}
+function goHome(){show('home',document.querySelector('nav button'));}
+renderPrograms();renderProgress();drawTimer();
+</script>
+</body></html>
